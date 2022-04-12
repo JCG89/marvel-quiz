@@ -3,8 +3,11 @@ import ironman from "../../images/ironman.png";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../FireBase/FireBaseConfig";
+import { Link, useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+const SignUp = (props) => {
+  const navigate = useNavigate();
+
   const widthImg = {
     width: "400px",
     height: "400px",
@@ -17,7 +20,7 @@ const SignUp = () => {
   };
 
   const [signUpData, setSignUpData] = useState(data);
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
   const changeInput = (e) => {
     setSignUpData({ ...signUpData, [e.target.id]: e.target.value });
   };
@@ -28,6 +31,7 @@ const SignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((user) => {
         setSignUpData({ ...data });
+        navigate("/welcome");
       })
       .catch((error) => {
         setError(error);
@@ -55,6 +59,8 @@ const SignUp = () => {
         </div>
         <div className="formBoxRight">
           <div className="formContent">
+            {error !== "" && <span>error!</span>}
+
             <h2>Inscription</h2>
             <form onSubmit={handleSubmit}>
               <div className="inputBox">
@@ -101,6 +107,11 @@ const SignUp = () => {
               </div>
               {btn}
             </form>
+            <div className="linkeContainer">
+              <Link className="simpleLink" to="/login">
+                Déja inscris? Connectez-vous!
+              </Link>
+            </div>
           </div>
         </div>
       </div>
