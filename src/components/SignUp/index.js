@@ -1,6 +1,8 @@
 import React from "react";
 import ironman from "../../images/ironman.png";
 import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../FireBase/FireBaseConfig";
 
 const SignUp = () => {
   const widthImg = {
@@ -15,8 +17,22 @@ const SignUp = () => {
   };
 
   const [signUpData, setSignUpData] = useState(data);
+  const [error, setError] = useState();
   const changeInput = (e) => {
     setSignUpData({ ...signUpData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { email, password } = signUpData;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((user) => {
+        setSignUpData({ ...data });
+      })
+      .catch((error) => {
+        setError(error);
+        setSignUpData({ ...data });
+      });
   };
 
   const { pseudo, email, password, confirmPassword } = signUpData;
@@ -40,7 +56,7 @@ const SignUp = () => {
         <div className="formBoxRight">
           <div className="formContent">
             <h2>Inscription</h2>
-            <form action="">
+            <form onSubmit={handleSubmit}>
               <div className="inputBox">
                 <input
                   value={pseudo}
