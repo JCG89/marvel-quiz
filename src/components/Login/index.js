@@ -41,7 +41,7 @@ const Login = () => {
         </div>
         <div className="formBoxRight">
           <div className="formContent">
-            {error !== "" && <span>error!</span>}
+            {error !== "" || (error !== null && <span>error!</span>)}
             <h2>Connexion</h2>
             <form onSubmit={handleSubmit}>
               <div className="inputBox">
