@@ -9,7 +9,6 @@ const Logout = () => {
     if (checked) {
       signOut(auth)
         .then(() => {
-          console.log("vous êtes déconnecté");
           // Si la connexion a reussi.
           navigate("/");
         })

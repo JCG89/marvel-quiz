@@ -5,6 +5,7 @@ import Footer from "../Footer";
 import Welcome from "../Welcome";
 import Login from "../Login";
 import SignUp from "../SignUp";
+import ForgetPassword from "../ForgetPassword";
 import "../../App.css";
 import ErrorPage from "../ErrorPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
 
