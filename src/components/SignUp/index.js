@@ -11,6 +11,7 @@ const SignUp = (props) => {
   const widthImg = {
     width: "400px",
     height: "400px",
+    filter: "brightness(1.5)",
   };
   const data = {
     pseudo: "",
