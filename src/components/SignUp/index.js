@@ -2,8 +2,9 @@ import React from "react";
 import ironman from "../../images/ironman.png";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../FireBase/FireBaseConfig";
+import { auth, user } from "../FireBase/FireBaseConfig";
 import { Link, useNavigate } from "react-router-dom";
+import { setDoc } from "firebase/firestore";
 
 const SignUp = (props) => {
   const navigate = useNavigate();
@@ -30,6 +31,12 @@ const SignUp = (props) => {
     e.preventDefault();
     const { email, password } = signUpData;
     createUserWithEmailAndPassword(auth, email, password)
+      .then((authUser) => {
+        return setDoc(user(authUser.user.uid), {
+          pseudo,
+          email,
+        });
+      })
       .then((user) => {
         setSignUpData({ ...data });
         navigate("/welcome");
