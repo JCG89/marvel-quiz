@@ -29,7 +29,7 @@ const SignUp = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = signUpData;
+    const { email, password, pseudo } = signUpData;
     createUserWithEmailAndPassword(auth, email, password)
       .then((authUser) => {
         return setDoc(user(authUser.user.uid), {
