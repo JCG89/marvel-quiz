@@ -14,10 +14,14 @@ class Quiz extends Component {
     idQuestion: 0,
     btnDisabled: true,
     userAnswer: null,
+    score: 0,
   };
+  storedDataRef = React.createRef();
   loadQuestions = (quizz) => {
     const fetchedArrQuiz = QuizMarvel[0].quizz[quizz];
     if (fetchedArrQuiz.length >= this.state.maxQuestions) {
+      this.storedDataRef.current = fetchedArrQuiz;
+      console.log(this.storedDataRef.current);
       const newArrQuiz = fetchedArrQuiz.map(
         ({ answer, ...keepRest }) => keepRest
       );
@@ -28,15 +32,25 @@ class Quiz extends Component {
       console.log("Pas assez de questions");
     }
   };
-  submitAnswer = (selectedAnswer) => {
-    this.setState({
-      userAnswer: selectedAnswer,
-      btnDisabled: false,
-    });
-  };
+
   componentDidMount() {
     this.loadQuestions(this.state.levelNames[this.state.levelQuiz]);
   }
+  nextQuestion = () => {
+    if (this.state.idQuestion === this.state.maxQuestions - 1) {
+      /*end*/
+    } else {
+      this.setState((prevState) => ({
+        idQuestion: prevState.idQuestion + 1,
+      }));
+    }
+    const goodAnswer = this.storedDataRef.current[this.state.idQuestion].answer;
+    if (this.state.userAnswer === goodAnswer) {
+      this.setState((prevState) => ({
+        score: prevState.score + 1,
+      }));
+    }
+  };
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.state.storedQuestions !== prevState.storedQuestions) {
       this.setState({
@@ -44,11 +58,24 @@ class Quiz extends Component {
         options: this.state.storedQuestions[this.state.idQuestion].options,
       });
     }
+    if (this.state.idQuestion !== prevState.idQuestion) {
+      this.setState({
+        question: this.state.storedQuestions[this.state.idQuestion].question,
+        options: this.state.storedQuestions[this.state.idQuestion].options,
+        userAnswer: null,
+        btnDisabled: true,
+      });
+    }
   }
 
-  render() {
-    const { pseudo } = this.props.userData;
+  submitAnswer = (selectedAnswer) => {
+    this.setState({
+      userAnswer: selectedAnswer,
+      btnDisabled: false,
+    });
+  };
 
+  render() {
     const displayOtions = this.state.options.map((option, index) => {
       return (
         <p
@@ -69,7 +96,11 @@ class Quiz extends Component {
         <h2>{this.state.question}</h2>
         {displayOtions}
 
-        <button disabled={this.state.btnDisabled} className="btnSubmit">
+        <button
+          disabled={this.state.btnDisabled}
+          className="btnSubmit"
+          onClick={this.nextQuestion}
+        >
           Suivant
         </button>
       </div>
