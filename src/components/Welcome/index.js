@@ -22,8 +22,8 @@ const Welcome = () => {
         .then((snapShot) => {
           if (snapShot.exists()) {
             const myData = snapShot.data();
-            console.log(myData);
-            console.log(snapShot.id);
+            /*console.log(myData);
+            console.log(snapShot.id);*/
             setUserData(myData);
           }
         })

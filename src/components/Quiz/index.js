@@ -12,6 +12,8 @@ class Quiz extends Component {
     question: null,
     options: [],
     idQuestion: 0,
+    btnDisabled: true,
+    userAnswer: null,
   };
   loadQuestions = (quizz) => {
     const fetchedArrQuiz = QuizMarvel[0].quizz[quizz];
@@ -25,6 +27,12 @@ class Quiz extends Component {
     } else {
       console.log("Pas assez de questions");
     }
+  };
+  submitAnswer = (selectedAnswer) => {
+    this.setState({
+      userAnswer: selectedAnswer,
+      btnDisabled: false,
+    });
   };
   componentDidMount() {
     this.loadQuestions(this.state.levelNames[this.state.levelQuiz]);
@@ -42,7 +50,17 @@ class Quiz extends Component {
     const { pseudo } = this.props.userData;
 
     const displayOtions = this.state.options.map((option, index) => {
-      return <p className="answerOptions">{option}</p>;
+      return (
+        <p
+          key={index}
+          onClick={() => this.submitAnswer(option)}
+          className={`answerOptions ${
+            this.state.userAnswer === option ? "selected" : null
+          }`}
+        >
+          {option}
+        </p>
+      );
     });
     return (
       <div>
@@ -51,7 +69,9 @@ class Quiz extends Component {
         <h2>{this.state.question}</h2>
         {displayOtions}
 
-        <button className="btnSubmit">Suivant</button>
+        <button disabled={this.state.btnDisabled} className="btnSubmit">
+          Suivant
+        </button>
       </div>
     );
   }
