@@ -62,7 +62,7 @@ const Login = () => {
                 />
                 <label htmlFor="password">Mot de passe</label>
               </div>
-              <button disabled={btn ? false : true}>Inscription</button>
+              <button disabled={btn ? false : true}>Connexion</button>
               <Link className="simpleLink" to="/forget-password">
                 Mot de passe oublié ?
               </Link>
