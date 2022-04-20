@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import Levels from "../Levels";
 import ProgressBar from "../ProgressBar";
 import { QuizMarvel } from "../QuizMarvel";
+import QuizOver from "../QuizOver";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+toast.configure();
 class Quiz extends Component {
   state = {
     levelNames: ["debutant", "confirme", "expert"],
@@ -15,13 +19,15 @@ class Quiz extends Component {
     btnDisabled: true,
     userAnswer: null,
     score: 0,
+    showWelcomeMsg: false,
+    quizEnd: false,
   };
   storedDataRef = React.createRef();
   loadQuestions = (quizz) => {
     const fetchedArrQuiz = QuizMarvel[0].quizz[quizz];
     if (fetchedArrQuiz.length >= this.state.maxQuestions) {
       this.storedDataRef.current = fetchedArrQuiz;
-      console.log(this.storedDataRef.current);
+
       const newArrQuiz = fetchedArrQuiz.map(
         ({ answer, ...keepRest }) => keepRest
       );
@@ -32,12 +38,29 @@ class Quiz extends Component {
       console.log("Pas assez de questions");
     }
   };
+  showWelcomeMsg = (pseudo) => {
+    if (!this.state.showWelcomeMsg) {
+      this.setState({
+        showWelcomeMsg: true,
+      });
+      toast(`Bienvenu ${pseudo}`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    }
+  };
 
   componentDidMount() {
     this.loadQuestions(this.state.levelNames[this.state.levelQuiz]);
   }
   nextQuestion = () => {
     if (this.state.idQuestion === this.state.maxQuestions - 1) {
+      this.gameOver();
       /*end*/
     } else {
       this.setState((prevState) => ({
@@ -49,6 +72,25 @@ class Quiz extends Component {
       this.setState((prevState) => ({
         score: prevState.score + 1,
       }));
+      toast.success(`Bravo +1 points !`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Réponse fausse!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -66,12 +108,20 @@ class Quiz extends Component {
         btnDisabled: true,
       });
     }
+    if (this.props.userData.pseudo) {
+      this.showWelcomeMsg(this.props.userData.pseudo);
+    }
   }
 
   submitAnswer = (selectedAnswer) => {
     this.setState({
       userAnswer: selectedAnswer,
       btnDisabled: false,
+    });
+  };
+  gameOver = () => {
+    this.setState({
+      quizEnd: true,
     });
   };
 
@@ -89,8 +139,10 @@ class Quiz extends Component {
         </p>
       );
     });
-    return (
-      <div>
+    return this.state.quizEnd ? (
+      <QuizOver />
+    ) : (
+      <>
         <Levels />
         <ProgressBar />
         <h2>{this.state.question}</h2>
@@ -103,7 +155,7 @@ class Quiz extends Component {
         >
           Suivant
         </button>
-      </div>
+      </>
     );
   }
 }
