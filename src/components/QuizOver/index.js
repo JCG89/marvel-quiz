@@ -3,32 +3,77 @@ import React, { useState, useEffect } from "react";
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setAsked] = useState([]);
 
+  const { levelNames, score, maxQuestions, levelQuiz, percent } = props;
   useEffect(() => {
     setAsked(ref.current);
   }, [ref]);
+  const averageGrade = maxQuestions / 2;
 
-  const questionAnswer = asked.map((question) => {
-    return (
-      <tr key={question.id}>
-        <td>{question.question}</td>
-        <td>{question.answer}</td>
+  const decision =
+    score >= averageGrade ? (
+      <>
+        <div className="stepsBtnContainer">
+          {levelQuiz < levelNames.length ? (
+            <>
+              <p className="successMsg">Bravo, passez au niveau suivant!</p>
+              <button className="btnResult success">Niveau suivant</button>
+            </>
+          ) : (
+            <>
+              <p className="successMsg">Bravo vous êtes un expert!</p>
+              <button className="btnResult gameOver">Niveau suivant</button>
+            </>
+          )}
+        </div>
+        <div className="percentage">
+          <div className="progressPercent">Réussite:{percent}%</div>
+          <div className="progressPercent">
+            Notes:{score}/{maxQuestions}{" "}
+          </div>
+        </div>
+      </>
+    ) : (
+      <>
+        <div className="stepsBtnContainer">
+          <p className="failureMsg">Vous avez échoué!</p>
+        </div>
+        <div className="percentage">
+          <div className="progressPercent">Réussite: {percent}%</div>
+          <div className="progressPercent">
+            Notes: {score}/{maxQuestions}
+          </div>
+        </div>
+      </>
+    );
 
-        <td>
-          <button className="btnInfo">Infos</button>
+  const questionAnswer =
+    score >= averageGrade ? (
+      asked.map((question) => {
+        return (
+          <tr key={question.id}>
+            <td>{question.question}</td>
+            <td>{question.answer}</td>
+
+            <td>
+              <button className="btnInfo">Infos</button>
+            </td>
+          </tr>
+        );
+      })
+    ) : (
+      <tr>
+        <td colSpan="3">
+          <p style={{ textAlign: "center", color: "red" }}>
+            {" "}
+            Vous N'avez pas droit aux réponses
+          </p>
         </td>
       </tr>
     );
-  });
+
   return (
     <>
-      <div className="stepsBtnContainer">
-        <p className="successMsg">Bravo vous êtes un expert!</p>
-        <button className="btnResult success">Niveau suivant</button>
-      </div>
-      <div className="percentage">
-        <div className="progressPercent">Réussite: 10%</div>
-        <div className="progressPercent">Notes: 10/10</div>
-      </div>
+      {decision}
       <hr />
       <p>Les réponses aux questions posées!</p>
 

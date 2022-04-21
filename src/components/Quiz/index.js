@@ -44,7 +44,7 @@ class Quiz extends Component {
         showWelcomeMsg: true,
       });
       toast(`Bienvenu ${pseudo}`, {
-        position: "top-center",
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -119,10 +119,28 @@ class Quiz extends Component {
       btnDisabled: false,
     });
   };
+  getPercentage = (maxQuest, ourScore) => (ourScore / maxQuest) * 100;
+
   gameOver = () => {
-    this.setState({
+    const gradePercent = this.getPercentage(
+      this.state.maxQuestions,
+      this.state.score
+    );
+    if (gradePercent >= 50) {
+      this.setState({
+        levelQuiz: this.state.levelQuiz + 1,
+        percent: gradePercent,
+        quizEnd: true,
+      });
+    } else {
+      this.setState({
+        percent: gradePercent,
+        quizEnd: true,
+      });
+    }
+    /*this.setState({
       quizEnd: true,
-    });
+    });*/
   };
 
   render() {
@@ -139,8 +157,15 @@ class Quiz extends Component {
         </p>
       );
     });
-    return !this.state.quizEnd ? (
-      <QuizOver ref={this.storedDataRef} />
+    return this.state.quizEnd ? (
+      <QuizOver
+        ref={this.storedDataRef}
+        levelNames={this.state.levelNames}
+        score={this.state.score}
+        maxQuestions={this.state.maxQuestions}
+        levelQuiz={this.state.levelQuiz}
+        percent={this.state.percent}
+      />
     ) : (
       <>
         <Levels />
