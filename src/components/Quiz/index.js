@@ -5,6 +5,7 @@ import { QuizMarvel } from "../QuizMarvel";
 import QuizOver from "../QuizOver";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BiChevronRightCircle } from "react-icons/bi";
 
 toast.configure();
 class Quiz extends Component {
@@ -170,6 +171,7 @@ class Quiz extends Component {
             this.state.userAnswer === option ? "selected" : null
           }`}
         >
+          <BiChevronRightCircle />
           {option}
         </p>
       );

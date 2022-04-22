@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { BsTrophy } from "react-icons/bs";
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setAsked] = useState([]);
 
@@ -32,7 +32,10 @@ const QuizOver = React.forwardRef((props, ref) => {
             </>
           ) : (
             <>
-              <p className="successMsg">Bravo vous êtes un expert!</p>
+              <p className="successMsg">
+                <BsTrophy />
+                Bravo vous êtes un expert!
+              </p>
               <button
                 className="btnResult gameOver"
                 onClick={() => loadLevelQuestions(0)}
