@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BsTrophy } from "react-icons/bs";
+import Loader from "../Loader";
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setAsked] = useState([]);
 
@@ -83,10 +84,12 @@ const QuizOver = React.forwardRef((props, ref) => {
     ) : (
       <tr>
         <td colSpan="3">
-          <p style={{ textAlign: "center", color: "red" }}>
-            {" "}
-            Vous N'avez pas droit aux réponses
-          </p>
+          <Loader
+            loadingMsg={
+              "Les réponses ne sont chargé que si vous avez la moyenne"
+            }
+            styling={{ textAlign: "center", color: "red" }}
+          />
         </td>
       </tr>
     );
