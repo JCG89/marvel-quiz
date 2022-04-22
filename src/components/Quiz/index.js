@@ -108,15 +108,12 @@ class Quiz extends Component {
     const {
       maxQuestions,
       storedQuestions,
-      question,
-      options,
+
       idQuestion,
-      btnDisabled,
-      userAnswer,
+
       score,
-      showWelcomeMsg,
+
       quizEnd,
-      percent,
     } = this.state;
     if (
       storedQuestions !== prevState.storedQuestions &&
@@ -174,14 +171,12 @@ class Quiz extends Component {
     const {
       levelQuiz,
       maxQuestions,
-      storedQuestions,
       question,
       options,
       idQuestion,
       btnDisabled,
       userAnswer,
       score,
-      showWelcomeMsg,
       quizEnd,
       percent,
     } = this.state;

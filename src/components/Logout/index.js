@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../FireBase/FireBaseConfig";
+import ReactTooltip from "react-tooltip";
 const Logout = () => {
   const navigate = useNavigate();
   const [checked, setChecked] = useState(false);
@@ -25,8 +26,9 @@ const Logout = () => {
     <div className="logoutContainer">
       <label className="switch">
         <input onChange={handleChange} type="checkbox" />
-        <span className="slider round"></span>
+        <span className="slider round" data-tip="Déconnexion"></span>
       </label>
+      <ReactTooltip place="left" effect="solid" />
     </div>
   );
 };
