@@ -186,7 +186,10 @@ class Quiz extends Component {
       />
     ) : (
       <>
-        <Levels />
+        <Levels
+          levelNames={this.state.levelNames}
+          levelQuiz={this.state.levelQuiz}
+        />
         <ProgressBar
           idQuestion={this.state.idQuestion}
           maxQuestions={this.state.maxQuestions}
