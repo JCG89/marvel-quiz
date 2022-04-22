@@ -8,21 +8,28 @@ import "react-toastify/dist/ReactToastify.css";
 
 toast.configure();
 class Quiz extends Component {
-  state = {
-    levelNames: ["debutant", "confirme", "expert"],
-    levelQuiz: 0,
-    maxQuestions: 10,
-    storedQuestions: [],
-    question: null,
-    options: [],
-    idQuestion: 0,
-    btnDisabled: true,
-    userAnswer: null,
-    score: 0,
-    showWelcomeMsg: false,
-    quizEnd: false,
-  };
-  storedDataRef = React.createRef();
+  constructor(props) {
+    super(props);
+
+    this.initialState = {
+      levelNames: ["debutant", "confirme", "expert"],
+      levelQuiz: 0,
+      maxQuestions: 10,
+      storedQuestions: [],
+      question: null,
+      options: [],
+      idQuestion: 0,
+      btnDisabled: true,
+      userAnswer: null,
+      score: 0,
+      showWelcomeMsg: false,
+      quizEnd: false,
+    };
+
+    this.state = this.initialState;
+    this.storedDataRef = React.createRef();
+  }
+
   loadQuestions = (quizz) => {
     const fetchedArrQuiz = QuizMarvel[0].quizz[quizz];
     if (fetchedArrQuiz.length >= this.state.maxQuestions) {
@@ -38,14 +45,14 @@ class Quiz extends Component {
       console.log("Pas assez de questions");
     }
   };
-  showWelcomeMsg = (pseudo) => {
+  showToastMsg = (pseudo) => {
     if (!this.state.showWelcomeMsg) {
       this.setState({
         showWelcomeMsg: true,
       });
       toast(`Bienvenu ${pseudo}`, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -60,7 +67,8 @@ class Quiz extends Component {
   }
   nextQuestion = () => {
     if (this.state.idQuestion === this.state.maxQuestions - 1) {
-      this.gameOver();
+      /*this.gameOver();*/
+      this.setState({ quizEnd: true });
       /*end*/
     } else {
       this.setState((prevState) => ({
@@ -74,7 +82,7 @@ class Quiz extends Component {
       }));
       toast.success(`Bravo +1 points !`, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -84,7 +92,7 @@ class Quiz extends Component {
     } else {
       toast.error("Réponse fausse!", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -94,13 +102,19 @@ class Quiz extends Component {
     }
   };
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.storedQuestions !== prevState.storedQuestions) {
+    if (
+      this.state.storedQuestions !== prevState.storedQuestions &&
+      this.state.storedQuestions.length
+    ) {
       this.setState({
         question: this.state.storedQuestions[this.state.idQuestion].question,
         options: this.state.storedQuestions[this.state.idQuestion].options,
       });
     }
-    if (this.state.idQuestion !== prevState.idQuestion) {
+    if (
+      this.state.idQuestion !== prevState.idQuestion &&
+      this.state.storedQuestions.length
+    ) {
       this.setState({
         question: this.state.storedQuestions[this.state.idQuestion].question,
         options: this.state.storedQuestions[this.state.idQuestion].options,
@@ -108,8 +122,16 @@ class Quiz extends Component {
         btnDisabled: true,
       });
     }
-    if (this.props.userData.pseudo) {
-      this.showWelcomeMsg(this.props.userData.pseudo);
+    if (this.state.quizEnd !== prevState.quizEnd) {
+      const gradePercent = this.getPercentage(
+        this.state.maxQuestions,
+        this.state.score
+      );
+      this.gameOver(gradePercent);
+    }
+
+    if (this.props.userData.pseudo !== prevProps.userData.pseudo) {
+      this.showToastMsg(this.props.userData.pseudo);
     }
   }
 
@@ -121,26 +143,21 @@ class Quiz extends Component {
   };
   getPercentage = (maxQuest, ourScore) => (ourScore / maxQuest) * 100;
 
-  gameOver = () => {
-    const gradePercent = this.getPercentage(
-      this.state.maxQuestions,
-      this.state.score
-    );
-    if (gradePercent >= 50) {
+  gameOver = (percent) => {
+    if (percent >= 50) {
       this.setState({
         levelQuiz: this.state.levelQuiz + 1,
-        percent: gradePercent,
-        quizEnd: true,
+        percent,
       });
     } else {
       this.setState({
-        percent: gradePercent,
-        quizEnd: true,
+        percent,
       });
     }
-    /*this.setState({
-      quizEnd: true,
-    });*/
+  };
+  loadLevelQuestions = (param) => {
+    this.setState({ ...this.initialState, levelQuiz: param });
+    this.loadQuestions(this.state.levelNames[param]);
   };
 
   render() {
@@ -165,6 +182,7 @@ class Quiz extends Component {
         maxQuestions={this.state.maxQuestions}
         levelQuiz={this.state.levelQuiz}
         percent={this.state.percent}
+        loadLevelQuestions={this.loadLevelQuestions}
       />
     ) : (
       <>
