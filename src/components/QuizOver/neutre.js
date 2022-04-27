@@ -1,16 +1,11 @@
-import React from "react";
+API_PUBLIC_KEY: "0ab4c99b21738b1de74ff3afe5a75f75";
 
-export default function neutre() {
-  return (
-    <div>
-      <div className="stepsBtnContainer">
-        <p className="successMsg">Bravo vous êtes un expert!</p>
-        <button className="btnResult success">Niveau suivant</button>
-      </div>
-      <div className="percentage">
-        <div className="progressPercent">Réussite: 10%</div>
-        <div className="progressPercent">Notes: 10/10</div>
-      </div>
-    </div>
-  );
-}
+//gateway.marvel.com/v1/public/characters?
+
+http: ts = 1;
+
+apikey = "0ab4c99b21738b1de74ff3afe5a75f75";
+
+public_key = "0ab4c99b21738b1de74ff3afe5a75f75";
+
+hash = f9f7cb83f4a704b9e45f028b3e1b7b7f;

@@ -15,6 +15,10 @@ const QuizOver = React.forwardRef((props, ref) => {
     percent,
     loadLevelQuestions,
   } = props;
+
+  const API_PUBLIC_KEY = process.env.REACT_APP_MARVEL_API_KEY;
+
+  const hash = "hash = f9f7cb83f4a704b9e45f028b3e1b7b7f;";
   useEffect(() => {
     setAsked(ref.current);
   }, [ref]);
