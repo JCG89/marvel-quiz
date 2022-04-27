@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BsTrophy } from "react-icons/bs";
 import Loader from "../Loader";
+import Modal from "../Modal";
+
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setAsked] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     levelNames,
@@ -15,6 +18,13 @@ const QuizOver = React.forwardRef((props, ref) => {
   useEffect(() => {
     setAsked(ref.current);
   }, [ref]);
+
+  const showModal = (id) => {
+    setOpenModal(true);
+  };
+  const hideModal = () => {
+    setOpenModal(false);
+  };
   const averageGrade = maxQuestions / 2;
 
   const decision =
@@ -76,7 +86,12 @@ const QuizOver = React.forwardRef((props, ref) => {
             <td>{question.answer}</td>
 
             <td>
-              <button className="btnInfo">Infos</button>
+              <button
+                onClick={() => showModal(question.heroId)}
+                className="btnInfo"
+              >
+                Infos
+              </button>
             </td>
           </tr>
         );
@@ -111,6 +126,17 @@ const QuizOver = React.forwardRef((props, ref) => {
           </thead>
           <tbody>{questionAnswer}</tbody>
         </table>
+        <Modal showModal={openModal} hideModal={hideModal}>
+          <div className="modalHeader">
+            <h2>Titre</h2>
+          </div>
+          <div className="modalBody">
+            <h4>Titre 2</h4>
+          </div>
+          <div className="modalFooter">
+            <button className="modalBtn">X</button>
+          </div>
+        </Modal>
       </div>
     </>
   );
