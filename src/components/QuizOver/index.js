@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { BsTrophy } from "react-icons/bs";
+import axios from "axios";
 import Loader from "../Loader";
 import Modal from "../Modal";
 
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setAsked] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [characterInfo, setCharacterInfo] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const {
     levelNames,
@@ -18,16 +21,29 @@ const QuizOver = React.forwardRef((props, ref) => {
 
   const API_PUBLIC_KEY = process.env.REACT_APP_MARVEL_API_KEY;
 
-  const hash = "hash = f9f7cb83f4a704b9e45f028b3e1b7b7f;";
+  const hash = "f9f7cb83f4a704b9e45f028b3e1b7b7f";
   useEffect(() => {
     setAsked(ref.current);
   }, [ref]);
 
   const showModal = (id) => {
     setOpenModal(true);
+
+    axios
+      .get(
+        `https://gateway.marvel.com/v1/public/characters/${id}?ts=1&apikey=${API_PUBLIC_KEY}&hash=${hash}`
+      )
+      .then((response) => {
+        setCharacterInfo(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const hideModal = () => {
     setOpenModal(false);
+    setLoading(true);
   };
   const averageGrade = maxQuestions / 2;
 
@@ -112,7 +128,28 @@ const QuizOver = React.forwardRef((props, ref) => {
         </td>
       </tr>
     );
-
+  const resultInModal = !loading ? (
+    <>
+      <div className="modalHeader">
+        <h2>{characterInfo.data.results[0].name}</h2>
+      </div>
+      <div className="modalBody">
+        <h4>Titre 2</h4>
+      </div>
+      <div className="modalFooter">
+        <button className="modalBtn">X</button>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="modalHeader">
+        <h2>Chargement en cours....</h2>
+      </div>
+      <div className="modalBody">
+        <Loader />
+      </div>
+    </>
+  );
   return (
     <>
       {decision}
@@ -131,15 +168,7 @@ const QuizOver = React.forwardRef((props, ref) => {
           <tbody>{questionAnswer}</tbody>
         </table>
         <Modal showModal={openModal} hideModal={hideModal}>
-          <div className="modalHeader">
-            <h2>Titre</h2>
-          </div>
-          <div className="modalBody">
-            <h4>Titre 2</h4>
-          </div>
-          <div className="modalFooter">
-            <button className="modalBtn">X</button>
-          </div>
+          {resultInModal}
         </Modal>
       </div>
     </>
